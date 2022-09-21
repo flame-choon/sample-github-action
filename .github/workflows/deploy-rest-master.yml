@@ -1,0 +1,16 @@
+name: Deploy component on Master
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  call-rest-ci:
+    uses: ./github/workflows/rest-ci.yml
+    with:
+      stage: master
+      aws-region: ap-northeast-2
+    secrets:
+      AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }} 
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }} 

@@ -1,0 +1,25 @@
+name: REST CI
+
+on:
+  workflow_call:
+    inputs:
+      stage:
+        required: true
+        type: string
+      aws-region:
+        required: true
+        type: string
+    secrets: 
+      AWS_ACCESS_KEY:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+
+jobs:
+  ensure-jobs-before-build:
+    name: "Detect Modified Files"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Chceck REST
+        uses: actions/checkout@v3
+      
