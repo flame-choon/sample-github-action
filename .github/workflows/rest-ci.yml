@@ -63,9 +63,15 @@ jobs:
         id: access-ecr
         uses: aws-actions/amazon-ecr-login@v1 
 
+      - uses: benjlevesque/short-sha@v1.2
+        id: short-sha
+        with:
+          length: 6
+
       - name: Set Image Tag 
         shell: bash
         run: |
           TAG=${{ inputs.stage }} 
           echo ::Set Image Tag Name=value::${TAG} 
+          echo ::GITHUB SHA::${{ github.sha }}
 
