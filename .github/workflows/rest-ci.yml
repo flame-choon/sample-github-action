@@ -43,7 +43,7 @@ jobs:
         working-directory: ./
 
       - name: Build with Gradle
-        run: ./gradlew clean build --debug
+        run: ./gradlew clean build --no-daemon
         working-directory: ./      
 
       # - name: Setup Gradle 
