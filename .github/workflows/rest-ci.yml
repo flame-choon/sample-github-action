@@ -20,6 +20,6 @@ jobs:
     name: "Detect Modified Files"
     runs-on: ubuntu-latest
     steps:
-      - name: Chceck REST
+      - name: Check REST
         uses: actions/checkout@v3
       
