@@ -73,6 +73,6 @@ jobs:
         run: |
           TAG=${{ inputs.stage }} 
           echo ::Set Image Tag Name=value::${TAG} 
-          echo ::short-sha Name=value::${steps.short-sha.outputs.sha}
+          echo ::short-sha Name=value::${{ steps.short-sha.outputs.sha }}
           echo ::GITHUB SHA::${{ github.sha }}
 
