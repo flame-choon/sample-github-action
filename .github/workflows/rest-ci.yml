@@ -58,3 +58,14 @@ jobs:
           # role-session-name: ${{ inputs.role-session-name }}
           # role-skip-session-tagging: true
           # role-duration-seconds: 4000
+
+      - name: Access to Amazon ECR
+        id: access-ecr
+        uses: aws-actions/amazon-ecr-login@v1 
+
+      - name: Set Image Tag 
+        shell: bash
+        run: |
+          TAG=${{ inputs.stage }} 
+          echo ::Set Image Tag Name=value::${TAG} 
+
