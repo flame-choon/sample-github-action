@@ -5,7 +5,7 @@ ARG JDK_IMAGE=openjdk:${JDK_VERSION}
 FROM ${JDK_IMAGE} AS rest-application
 
 WORKDIR /app
-COPY src/target/rest-0.1.0.jar app.jar
+COPY build/libs/rest-0.0.1-SNAPSHOT.jar app.jar
 
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "./app.jar"]
