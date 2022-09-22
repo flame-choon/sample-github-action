@@ -82,7 +82,6 @@ jobs:
           REGISTRY: ${{ steps.access-ecr.outputs.registry }}
           VERSION: "0.0.1"
           PROFILE: "master"    
-          TAG: ${{ steps.condval.outputs.value }}
-          JDK_VERSION: ""
+          # TAG: ${{ steps.condval.outputs.value }}
         run: |
-          docker build -t ${REGISTRY}/github-action-test/rest:${TAG}
+          docker build -t ${REGISTRY}/github-action-test/rest:${VERSION}
