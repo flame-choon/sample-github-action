@@ -69,6 +69,7 @@ jobs:
           length: 6
 
       - name: Set Image Tag 
+        id: condval
         shell: bash
         run: |
           TAG=${{ inputs.stage }} 
@@ -76,3 +77,12 @@ jobs:
           echo ::short-sha Name=value::${{ steps.short-sha.outputs.sha }}
           echo ::GITHUB SHA::${{ github.sha }}
 
+      - name: Generate Docker Image
+        env:
+          REGISTRY: ${{ steps.access-ecr.outputs.registry }}
+          VERSION: "0.0.1"
+          PROFILE: "master"    
+          TAG: ${{ steps.condval.outputs.value }}
+          JDK_VERSION: ""
+        run: |
+          docker build -t ${REGISTRY}/github-action-test/rest:${TAG}
