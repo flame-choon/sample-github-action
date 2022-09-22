@@ -84,4 +84,4 @@ jobs:
           PROFILE: "master"    
           # TAG: ${{ steps.condval.outputs.value }}
         run: |
-          docker build -t ${REGISTRY}/github-action-test/rest:${VERSION}
+          docker build -t ${REGISTRY}/github-action-test/rest:${VERSION} .
