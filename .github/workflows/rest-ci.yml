@@ -95,3 +95,14 @@ jobs:
       #     VERSION: "0.0.1"
       #   run:
       #     docker push ${REGISTRY}/rest:${VERSION}      
+  project-deploy:
+    name: project-deploy 
+    needs:
+      - project-build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout REST
+        uses: actions/checkout@v3
+        with:
+          repository: flame-choon/sample-github-action
+          ref: ${{ github.ref_name }}
