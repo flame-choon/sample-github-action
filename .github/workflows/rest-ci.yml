@@ -106,6 +106,7 @@ jobs:
         with:
           repository: flame-choon/sample-github-action-chart
           ref: ${{ github.ref_name }}
+          token: ${{ secrets.FLAME_CHOON_PAT }}
       
       - name: Preprocess
         id: preprocess    
