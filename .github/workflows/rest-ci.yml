@@ -85,3 +85,10 @@ jobs:
           # TAG: ${{ steps.condval.outputs.value }}
         run: |
           docker build -t ${REGISTRY}/github-action-test/rest:${VERSION} .
+
+      - name: Push Docker Image
+        env:
+          REGISTRY: ${{ steps.access-ecr.outputs.registry }}
+          VERSION: "0.0.1"
+        run:
+          docker push ${REGISTRY}/github-action-rest/rest:${VERSION}      
