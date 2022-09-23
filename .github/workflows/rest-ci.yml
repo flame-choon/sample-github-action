@@ -80,15 +80,17 @@ jobs:
       - name: Generate Docker Image
         env:
           REGISTRY: ${{ steps.access-ecr.outputs.registry }}
-          VERSION: "0.0.1"
+          VERSION: "latest"
           PROFILE: "master"    
           # TAG: ${{ steps.condval.outputs.value }}
         run: |
           docker build -t ${REGISTRY}/rest:${VERSION} .
+          docker push ${REGISTRY}/rest:${VERSION}
+          echo "::set-output name=image::${REGISTRY}/rest:${VERSION}"
 
-      - name: Push Docker Image
-        env:
-          REGISTRY: ${{ steps.access-ecr.outputs.registry }}
-          VERSION: "0.0.1"
-        run:
-          docker push ${REGISTRY}/rest:${VERSION}      
+      # - name: Push Docker Image
+      #   env:
+      #     REGISTRY: ${{ steps.access-ecr.outputs.registry }}
+      #     VERSION: "0.0.1"
+      #   run:
+      #     docker push ${REGISTRY}/rest:${VERSION}      
