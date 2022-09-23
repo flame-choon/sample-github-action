@@ -104,7 +104,7 @@ jobs:
       - name: Checkout REST
         uses: actions/checkout@v3
         with:
-          repository: flame-choon/sample-github-action
+          repository: flame-choon/sample-github-action-chart
           ref: ${{ github.ref_name }}
       
       - name: Preprocess
