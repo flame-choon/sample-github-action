@@ -82,12 +82,13 @@ jobs:
           REGISTRY: ${{ steps.access-ecr.outputs.registry }}
           VERSION: "latest"
           PROFILE: "master"    
+          PAT: ${{ secrets.FLAME_CHOON_PAT }}
           # TAG: ${{ steps.condval.outputs.value }}
         run: |
           docker build -t ${REGISTRY}/rest:${VERSION} .
           docker push ${REGISTRY}/rest:${VERSION}
           echo "::set-output name=image::${REGISTRY}/rest:${VERSION}"
-          echo "::FLAME_CHOON::${{ secrets.FLAME_CHOON_PAT }}"
+          echo "::FLAME_CHOON::${PAT}"
   
   # project-deploy:
   #   name: project-deploy 
