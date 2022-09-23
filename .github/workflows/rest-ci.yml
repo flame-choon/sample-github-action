@@ -87,28 +87,22 @@ jobs:
           docker build -t ${REGISTRY}/rest:${VERSION} .
           docker push ${REGISTRY}/rest:${VERSION}
           echo "::set-output name=image::${REGISTRY}/rest:${VERSION}"
-
-
-      # - name: Push Docker Image
-      #   env:
-      #     REGISTRY: ${{ steps.access-ecr.outputs.registry }}
-      #     VERSION: "0.0.1"
-      #   run:
-      #     docker push ${REGISTRY}/rest:${VERSION}      
-  project-deploy:
-    name: project-deploy 
-    needs:
-      - project-build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout REST
-        uses: actions/checkout@v2
-        with:
-          repository: flame-choon/sample-github-action-chart
-          ref: ${{ github.ref_name }}
-          token: ${{ secrets.FLAME_CHOON_PAT }}
+          echo "::FLAME_CHOON::${{ secrets.FLAME_CHOON_PAT }}"
+  
+  # project-deploy:
+  #   name: project-deploy 
+  #   needs:
+  #     - project-build
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout REST
+  #       uses: actions/checkout@v2
+  #       with:
+  #         repository: flame-choon/sample-github-action-chart
+  #         ref: ${{ github.ref_name }}
+  #         token: ${{ secrets.FLAME_CHOON_PAT }}
       
-      - name: Preprocess
-        id: preprocess    
-        run: |
-          echo "::set-output name=deploymentjson::$(ls */*deployment.yaml | jq -R -s -c 'split("\n")[:-1]')"
+  #     - name: Preprocess
+  #       id: preprocess    
+  #       run: |
+  #         echo "::set-output name=deploymentjson::$(ls */*deployment.yaml | jq -R -s -c 'split("\n")[:-1]')"
