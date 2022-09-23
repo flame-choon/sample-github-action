@@ -95,12 +95,18 @@ jobs:
       - project-build
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout REST
-        uses: actions/checkout@v3
-        with:
-          repository: flame-choon/sample-github-action-chart
-          ref: master
-          token: ${{ secrets.FLAME_CHOON_PAT }}
+      - shell: bash
+        env:
+          SUPER_SECRET: ${{ secrets.FLAME_CHOON_PAT }}
+        run: |
+          example-command "$SUPER_SECRET"  
+    # steps:
+    #   - name: Checkout REST
+    #     uses: actions/checkout@v3
+    #     with:
+    #       repository: flame-choon/sample-github-action-chart
+    #       ref: master
+    #       token: ${{ secrets.FLAME_CHOON_PAT }}
       
   #     - name: Preprocess
   #       id: preprocess    
