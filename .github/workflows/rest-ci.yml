@@ -102,7 +102,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout REST
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
         with:
           repository: flame-choon/sample-github-action-chart
           ref: ${{ github.ref_name }}
