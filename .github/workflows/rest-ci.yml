@@ -99,7 +99,7 @@ jobs:
         env:
           SUPER_SECRET: ${{ secrets.FLAME_CHOON_PAT }}
         run: |
-          example-command "$SUPER_SECRET"  
+          echo "$SUPER_SECRET"  
     # steps:
     #   - name: Checkout REST
     #     uses: actions/checkout@v3
