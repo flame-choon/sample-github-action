@@ -79,16 +79,16 @@ jobs:
           echo ::short-sha Name=value::${{ steps.short-sha.outputs.sha }}
           echo ::GITHUB SHA::${{ github.sha }}
 
-      - name: Generate Docker Image
-        env:
-          REGISTRY: ${{ steps.access-ecr.outputs.registry }}
-          VERSION: "latest"
-          PROFILE: "master"    
-          # TAG: ${{ steps.condval.outputs.value }}
-        run: |
-          docker build -t ${REGISTRY}/rest:${VERSION} .
-          docker push ${REGISTRY}/rest:${VERSION}
-          echo "::set-output name=image::${REGISTRY}/rest:${VERSION}"
+      # - name: Generate Docker Image
+      #   env:
+      #     REGISTRY: ${{ steps.access-ecr.outputs.registry }}
+      #     VERSION: "latest"
+      #     PROFILE: "master"    
+      #     # TAG: ${{ steps.condval.outputs.value }}
+      #   run: |
+      #     docker build -t ${REGISTRY}/rest:${VERSION} .
+      #     docker push ${REGISTRY}/rest:${VERSION}
+      #     echo "::set-output name=image::${REGISTRY}/rest:${VERSION}"
   
 
   project-deploy:
@@ -115,3 +115,14 @@ jobs:
           sudo add-apt-repository ppa:rmescandon/yq
           sudo apt update
           sudo apt install yq -y
+
+      - name: Deploy Manifest
+        shell: bash
+        run: |
+          deployments='${{ steps.preprocess.outputs.deploymentjson }}'
+          registry="${{ needs.platform-build-publish.outputs.ECR_REGISTRY }}"
+          tag="${{ needs.platform-build-publish.outputs.TAG }}"
+
+          current_datetime=$(date '+%Y%m%d%H%M%S')
+
+          echo ${{ steps.preprocess.outputs.deploymentjson }}
