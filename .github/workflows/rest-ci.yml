@@ -30,6 +30,7 @@ jobs:
     name: "Project build"
     runs-on: ubuntu-latest
     outputs:
+      ECR_REGISTRY: ${{ steps.access-ecr.outputs.registry }}
       short-sha: ${{ steps.short-sha.outputs.sha }}
     steps:
       - name: Checkout REST
@@ -114,33 +115,33 @@ jobs:
           echo "::${{ needs.project-build.outputs.ECR_REGISTRY }}"
           echo "::${{ needs.project-build.outputs.short-sha }}"
 
-  #     - name: Install yq
-  #       run: |
-  #         sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys CC86BB64
-  #         sudo add-apt-repository ppa:rmescandon/yq
-  #         sudo apt update
-  #         sudo apt install yq -y
+      - name: Install yq
+        run: |
+          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys CC86BB64
+          sudo add-apt-repository ppa:rmescandon/yq
+          sudo apt update
+          sudo apt install yq -y
 
-  #     - name: Deploy Manifest
-  #       shell: bash
-  #       run: |
-  #         deployments='${{ steps.preprocess.outputs.deploymentjson }}'
-  #         registry="${{ needs.platform-build-publish.outputs.ECR_REGISTRY }}"
-  #         tag="${{ needs.platform-build-publish.outputs.TAG }}"
+      - name: Deploy Manifest
+        shell: bash
+        run: |
+          deployments='${{ steps.preprocess.outputs.deploymentjson }}'
+          registry="${{ needs.platform-build-publish.outputs.ECR_REGISTRY }}"
+          tag="${{ needs.platform-build-publish.outputs.TAG }}"
 
-  #         current_datetime=$(date '+%Y%m%d%H%M%S')
+          current_datetime=$(date '+%Y%m%d%H%M%S')
 
-  #         for row in $(echo "${deployments}" | jq -r '.[]'); do
-  #             module=$(echo ${row} | cut -d"/" -f2 | cut -d"-" -f2,3)
-  #             value="${registry}/rest/${module}:${tag}"
+          for row in $(echo "${deployments}" | jq -r '.[]'); do
+              module=$(echo ${row} | cut -d"/" -f2 | cut -d"-" -f2,3)
+              value="${registry}/rest/${module}:${tag}"
           
-  #             yq e --inplace ".metadata.annotations.\"rest.app/environment\" = \"${{ inputs.stage }}\"" ${row}
-  #             yq e --inplace ".metadata.annotations.\"rest.app/short-id\" = \"${{ needs.project-build.outputs.short-sha }}\"" ${row}
-  #             yq e --inplace ".metadata.annotations.\"rest.app/create-datetime\" = \"$current_datetime\"" ${row}
-  #         done
+              yq e --inplace ".metadata.annotations.\"rest.app/environment\" = \"${{ inputs.stage }}\"" ${row}
+              yq e --inplace ".metadata.annotations.\"rest.app/short-id\" = \"${{ needs.project-build.outputs.short-sha }}\"" ${row}
+              yq e --inplace ".metadata.annotations.\"rest.app/create-datetime\" = \"$current_datetime\"" ${row}
+          done
           
-  #         git config user.name 'flame-choon'
-  #         git config user.email 'sweetmandoo@kakao.com'
-  #         git add -u
-  #         git commit -m "Update Image Version to ${{ needs.project-build.outputs.TAG }}"
-  #         git push origin ${{ github.ref_name }}
+          git config user.name 'flame-choon'
+          git config user.email 'sweetmandoo@kakao.com'
+          git add -u
+          git commit -m "Update Image Version to ${{ needs.project-build.outputs.TAG }}"
+          git push origin ${{ github.ref_name }}
