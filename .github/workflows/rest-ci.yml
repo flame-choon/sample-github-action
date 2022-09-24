@@ -29,6 +29,8 @@ jobs:
       - ensure-jobs-before-build
     name: "Project build"
     runs-on: ubuntu-latest
+    outputs:
+      short-sha: ${{ steps.short-sha.outputs.sha }}
     steps:
       - name: Checkout REST
         uses: actions/checkout@v3
@@ -79,16 +81,17 @@ jobs:
           echo ::short-sha Name=value::${{ steps.short-sha.outputs.sha }}
           echo ::GITHUB SHA::${{ github.sha }}
 
-      # - name: Generate Docker Image
-      #   env:
-      #     REGISTRY: ${{ steps.access-ecr.outputs.registry }}
-      #     VERSION: "latest"
-      #     PROFILE: "master"    
-      #     # TAG: ${{ steps.condval.outputs.value }}
-      #   run: |
-      #     docker build -t ${REGISTRY}/rest:${VERSION} .
-      #     docker push ${REGISTRY}/rest:${VERSION}
-      #     echo "::set-output name=image::${REGISTRY}/rest:${VERSION}"
+      - name: Generate Docker Image
+        env:
+          REGISTRY: ${{ steps.access-ecr.outputs.registry }}
+          VERSION: "latest"
+          PROFILE: "master"    
+          # TAG: ${{ steps.condval.outputs.value }}
+        run: |
+          docker build -t ${REGISTRY}/rest:${VERSION} .
+          docker push ${REGISTRY}/rest:${VERSION}
+          echo ::set-output name=image::${REGISTRY}/rest:${VERSION}
+          echo ::set-output name=ECR_REGISTRY::${REGISTRY}
   
 
   project-deploy:
