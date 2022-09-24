@@ -125,4 +125,17 @@ jobs:
 
           current_datetime=$(date '+%Y%m%d%H%M%S')
 
-          echo ${{ steps.preprocess.outputs.deploymentjson }}
+          for row in $(echo "${deployments}" | jq -r '.[]'); do
+              module=$(echo ${row} | cut -d"/" -f2 | cut -d"-" -f2,3)
+              value="${registry}/rest/${module}:${tag}"
+          
+              yq e --inplace ".metadata.annotations.\"rest.app/environment\" = \"${{ inputs.stage }}\"" ${row}
+              yq e --inplace ".metadata.annotations.\"rest.app/short-id\" = \"${{ needs.project-build.outputs.short-sha }}\"" ${row}
+              yq e --inplace ".metadata.annotations.\"rest.app/create-datetime\" = \"$current_datetime\"" ${row}
+          done
+          
+          git config user.name 'flame-choon'
+          git config user.email 'sweetmandoo@kakao.com'
+          git add -u
+          git commit -m "Update Image Version to ${{ needs.project-build.outputs.TAG }}"
+          git push origin ${{ github.ref_name }}
