@@ -108,6 +108,7 @@ jobs:
         id: preprocess    
         run: |
           echo "::set-output name=deploymentjson::$(ls */*deployment.yaml | jq -R -s -c 'split("\n")[:-1]')"
+          echo "::${{ needs.project-build.outputs.ECR_REGISTRY }}"
           echo "::${{ needs.project-build.outputs.short-sha }}"
 
   #     - name: Install yq
