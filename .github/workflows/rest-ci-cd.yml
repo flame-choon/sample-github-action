@@ -139,19 +139,21 @@ jobs:
               # module=$(echo ${row} | cut -d"/" -f2 | cut -d"-" -f2,3)
               # value="${registry}/rest/${module}:${tag}"
               value="${registry}/rest:${tag}"
+
+              echo $value
           
-              yq e --inplace ".metadata.annotations.\"rest.app/environment\" = \"${{ inputs.stage }}\"" ${row}
-              yq e --inplace ".metadata.annotations.\"rest.app/short-id\" = \"${{ needs.project-build.outputs.short-sha }}\"" ${row}
-              yq e --inplace ".metadata.annotations.\"rest.app/create-datetime\" = \"$current_datetime\"" ${row}
-              yq e --inplace ".spec.template.metadata.annotations.\"rest.app/environment\" = \"${{ inputs.stage }}\"" ${row}
-              yq e --inplace ".spec.template.metadata.annotations.\"rest.app/short-id\" = \"${{ needs.project-build.outputs.short-sha }}\"" ${row}
-              yq e --inplace ".spec.template.metadata.annotations.\"rest.app/create-datetime\" = \"$current_datetime\"" ${row}
+              # yq e --inplace ".metadata.annotations.\"rest.app/environment\" = \"${{ inputs.stage }}\"" ${row}
+              # yq e --inplace ".metadata.annotations.\"rest.app/short-id\" = \"${{ needs.project-build.outputs.short-sha }}\"" ${row}
+              # yq e --inplace ".metadata.annotations.\"rest.app/create-datetime\" = \"$current_datetime\"" ${row}
+              # yq e --inplace ".spec.template.metadata.annotations.\"rest.app/environment\" = \"${{ inputs.stage }}\"" ${row}
+              # yq e --inplace ".spec.template.metadata.annotations.\"rest.app/short-id\" = \"${{ needs.project-build.outputs.short-sha }}\"" ${row}
+              # yq e --inplace ".spec.template.metadata.annotations.\"rest.app/create-datetime\" = \"$current_datetime\"" ${row}
               
-              yq e --inplace ".spec.template.spec.containers[0].image = \"$value\"" ${row}
+              # yq e --inplace ".spec.template.spec.containers[0].image = \"$value\"" ${row}
           done
           
-          git config user.name 'flame-choon'
-          git config user.email 'sweetmandoo@kakao.com'
-          git add -u
-          git commit -m "Update Image Version to ${{ needs.project-build.outputs.TAG }}"
-          git push origin ${{ github.ref_name }}
+          # git config user.name 'flame-choon'
+          # git config user.email 'sweetmandoo@kakao.com'
+          # git add -u
+          # git commit -m "Update Image Version to ${{ needs.project-build.outputs.TAG }}"
+          # git push origin ${{ github.ref_name }}
