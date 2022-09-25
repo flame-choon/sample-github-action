@@ -81,12 +81,12 @@ jobs:
           VERSION=$(grep -w version build.gradle | cut -d"=" -f2)
           echo ::set-output name=VERSION::${VERSION}    
 
-      # - name: Set Image Tag 
-      #   id: condval
-      #   shell: bash
-      #   run: |
-      #     TAG=${{ inputs.stage }} 
-      #     echo ::set-output name=value::${TAG} 
+      - name: Set Image Tag 
+        id: condval
+        shell: bash
+        run: |
+          TAG=${{ inputs.stage }} 
+          echo ::set-output name=value::${TAG} 
 
       # - name: Generate Docker Image
       #   env:
