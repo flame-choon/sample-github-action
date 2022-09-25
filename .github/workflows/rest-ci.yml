@@ -32,6 +32,7 @@ jobs:
     outputs:
       ECR_REGISTRY: ${{ steps.access-ecr.outputs.registry }}
       short-sha: ${{ steps.short-sha.outputs.sha }}
+      TAG: ${{ steps.condval.outputs.vale }}
     steps:
       - name: Checkout REST
         uses: actions/checkout@v3
@@ -78,73 +79,71 @@ jobs:
         shell: bash
         run: |
           TAG=${{ inputs.stage }} 
-          echo ::Set Image Tag Name=value::${TAG} 
-          echo ::short-sha Name=value::${{ steps.short-sha.outputs.sha }}
-          echo ::GITHUB SHA::${{ github.sha }}
+          echo ::set-output name=TAG::${TAG} 
 
-      - name: Generate Docker Image
-        env:
-          REGISTRY: ${{ steps.access-ecr.outputs.registry }}
-          VERSION: "latest"
-          PROFILE: "master"    
-          # TAG: ${{ steps.condval.outputs.value }}
-        run: |
-          docker build -t ${REGISTRY}/rest:${VERSION} .
-          docker push ${REGISTRY}/rest:${VERSION}
-          echo ::set-output name=image::${REGISTRY}/rest:${VERSION}
-          echo ::set-output name=ECR_REGISTRY::${REGISTRY}
+  #     - name: Generate Docker Image
+  #       env:
+  #         REGISTRY: ${{ steps.access-ecr.outputs.registry }}
+  #         VERSION: "latest"
+  #         PROFILE: "master"    
+  #         # TAG: ${{ steps.condval.outputs.value }}
+  #       run: |
+  #         docker build -t ${REGISTRY}/rest:${VERSION} .
+  #         docker push ${REGISTRY}/rest:${VERSION}
+  #         echo ::set-output name=image::${REGISTRY}/rest:${VERSION}
+  #         echo ::set-output name=ECR_REGISTRY::${REGISTRY}
   
 
-  project-deploy:
-    name: project-deploy 
-    needs:
-      - project-build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout REST
-        uses: actions/checkout@v3
-        with:
-          repository: flame-choon/sample-github-action-chart
-          ref: master
-          token: ${{ secrets.FLAME_CHOON_PAT }}
+  # project-deploy:
+  #   name: project-deploy 
+  #   needs:
+  #     - project-build
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout REST
+  #       uses: actions/checkout@v3
+  #       with:
+  #         repository: flame-choon/sample-github-action-chart
+  #         ref: master
+  #         token: ${{ secrets.FLAME_CHOON_PAT }}
       
-      - name: Preprocess
-        id: preprocess    
-        run: |
-          echo "::set-output name=deploymentjson::$(ls */*deployment.yaml | jq -R -s -c 'split("\n")[:-1]')"
-          echo "::${{ needs.project-build.outputs.ECR_REGISTRY }}"
-          echo "::${{ needs.project-build.outputs.short-sha }}"
+  #     - name: Preprocess
+  #       id: preprocess    
+  #       run: |
+  #         echo "::set-output name=deploymentjson::$(ls */*deployment.yaml | jq -R -s -c 'split("\n")[:-1]')"
+  #         echo "::${{ needs.project-build.outputs.ECR_REGISTRY }}"
+  #         echo "::${{ needs.project-build.outputs.short-sha }}"
 
-      - name: Install yq
-        run: |
-          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys CC86BB64
-          sudo add-apt-repository ppa:rmescandon/yq
-          sudo apt update
-          sudo apt install yq -y
+  #     - name: Install yq
+  #       run: |
+  #         sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys CC86BB64
+  #         sudo add-apt-repository ppa:rmescandon/yq
+  #         sudo apt update
+  #         sudo apt install yq -y
 
-      - name: Deploy Manifest
-        shell: bash
-        run: |
-          deployments='${{ steps.preprocess.outputs.deploymentjson }}'
-          registry="${{ needs.platform-build-publish.outputs.ECR_REGISTRY }}"
-          tag="${{ needs.platform-build-publish.outputs.TAG }}"
+  #     - name: Deploy Manifest
+  #       shell: bash
+  #       run: |
+  #         deployments='${{ steps.preprocess.outputs.deploymentjson }}'
+  #         registry="${{ needs.platform-build-publish.outputs.ECR_REGISTRY }}"
+  #         tag="${{ needs.platform-build-publish.outputs.TAG }}"
 
-          current_datetime=$(date '+%Y%m%d%H%M%S')
+  #         current_datetime=$(date '+%Y%m%d%H%M%S')
 
-          for row in $(echo "${deployments}" | jq -r '.[]'); do
-              module=$(echo ${row} | cut -d"/" -f2 | cut -d"-" -f2,3)
-              value="${registry}/rest/${module}:${tag}"
+  #         for row in $(echo "${deployments}" | jq -r '.[]'); do
+  #             module=$(echo ${row} | cut -d"/" -f2 | cut -d"-" -f2,3)
+  #             value="${registry}/rest/${module}:${tag}"
           
-              yq e --inplace ".metadata.annotations.\"rest.app/environment\" = \"${{ inputs.stage }}\"" ${row}
-              yq e --inplace ".metadata.annotations.\"rest.app/short-id\" = \"${{ needs.project-build.outputs.short-sha }}\"" ${row}
-              yq e --inplace ".metadata.annotations.\"rest.app/create-datetime\" = \"$current_datetime\"" ${row}
-              yq e --inplace ".spec.template.metadata.annotations.\"rest.app/environment\" = \"${{ inputs.stage }}\"" ${row}
-              yq e --inplace ".spec.template.metadata.annotations.\"rest.app/short-id\" = \"${{ needs.project-build.outputs.short-sha }}\"" ${row}
-              yq e --inplace ".spec.template.metadata.annotations.\"rest.app/create-datetime\" = \"$current_datetime\"" ${row}
-          done
+  #             yq e --inplace ".metadata.annotations.\"rest.app/environment\" = \"${{ inputs.stage }}\"" ${row}
+  #             yq e --inplace ".metadata.annotations.\"rest.app/short-id\" = \"${{ needs.project-build.outputs.short-sha }}\"" ${row}
+  #             yq e --inplace ".metadata.annotations.\"rest.app/create-datetime\" = \"$current_datetime\"" ${row}
+  #             yq e --inplace ".spec.template.metadata.annotations.\"rest.app/environment\" = \"${{ inputs.stage }}\"" ${row}
+  #             yq e --inplace ".spec.template.metadata.annotations.\"rest.app/short-id\" = \"${{ needs.project-build.outputs.short-sha }}\"" ${row}
+  #             yq e --inplace ".spec.template.metadata.annotations.\"rest.app/create-datetime\" = \"$current_datetime\"" ${row}
+  #         done
           
-          git config user.name 'flame-choon'
-          git config user.email 'sweetmandoo@kakao.com'
-          git add -u
-          git commit -m "Update Image Version to ${{ needs.project-build.outputs.TAG }}"
-          git push origin ${{ github.ref_name }}
+  #         git config user.name 'flame-choon'
+  #         git config user.email 'sweetmandoo@kakao.com'
+  #         git add -u
+  #         git commit -m "Update Image Version to ${{ needs.project-build.outputs.TAG }}"
+  #         git push origin ${{ github.ref_name }}
