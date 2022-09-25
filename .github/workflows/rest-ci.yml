@@ -81,17 +81,14 @@ jobs:
           TAG=${{ inputs.stage }} 
           echo ::set-output name=TAG::${TAG} 
 
-  #     - name: Generate Docker Image
-  #       env:
-  #         REGISTRY: ${{ steps.access-ecr.outputs.registry }}
-  #         VERSION: "latest"
-  #         PROFILE: "master"    
-  #         # TAG: ${{ steps.condval.outputs.value }}
-  #       run: |
-  #         docker build -t ${REGISTRY}/rest:${VERSION} .
-  #         docker push ${REGISTRY}/rest:${VERSION}
-  #         echo ::set-output name=image::${REGISTRY}/rest:${VERSION}
-  #         echo ::set-output name=ECR_REGISTRY::${REGISTRY}
+      - name: Generate Docker Image
+        env:
+          REGISTRY: ${{ steps.access-ecr.outputs.registry }}
+          VERSION: "latest"
+          TAG: ${{ steps.condval.outputs.value }}
+        run: |
+          docker build -t ${REGISTRY}/rest:${TAG} .
+          docker push ${REGISTRY}/rest:${TAG}
   
 
   # project-deploy:
