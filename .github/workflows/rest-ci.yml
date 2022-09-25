@@ -79,7 +79,7 @@ jobs:
         shell: bash
         run: |
           TAG=${{ inputs.stage }} 
-          echo ::set-output name=TAG::${TAG} 
+          echo ::set-output name=value::${TAG} 
 
       - name: Generate Docker Image
         env:
