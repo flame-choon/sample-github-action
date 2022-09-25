@@ -7,7 +7,7 @@ on:
 
 jobs:
   call-rest-ci:
-    uses: ./.github/workflows/rest-ci.yml
+    uses: ./.github/workflows/rest-ci-cd.yml
     with:
       stage: master
       aws-region: ap-northeast-2
