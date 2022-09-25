@@ -84,6 +84,8 @@ jobs:
 
       - name: Set Image Tag 
         id: condval
+        env:
+          VERSION: ${{ steps.get_version.outputs.VERSION }}
         shell: bash
         run: |
           TAG=${{ inputs.stage }} 
