@@ -128,8 +128,9 @@ jobs:
           current_datetime=$(date '+%Y%m%d%H%M%S')
 
           for row in $(echo "${deployments}" | jq -r '.[]'); do
-              module=$(echo ${row} | cut -d"/" -f2 | cut -d"-" -f2,3)
-              value="${registry}/rest/${module}:${tag}"
+              # module=$(echo ${row} | cut -d"/" -f2 | cut -d"-" -f2,3)
+              # value="${registry}/rest/${module}:${tag}"
+              value="${registry}/rest:${tag}"
           
               yq e --inplace ".metadata.annotations.\"rest.app/environment\" = \"${{ inputs.stage }}\"" ${row}
               yq e --inplace ".metadata.annotations.\"rest.app/short-id\" = \"${{ needs.project-build.outputs.short-sha }}\"" ${row}
@@ -137,6 +138,8 @@ jobs:
               yq e --inplace ".spec.template.metadata.annotations.\"rest.app/environment\" = \"${{ inputs.stage }}\"" ${row}
               yq e --inplace ".spec.template.metadata.annotations.\"rest.app/short-id\" = \"${{ needs.project-build.outputs.short-sha }}\"" ${row}
               yq e --inplace ".spec.template.metadata.annotations.\"rest.app/create-datetime\" = \"$current_datetime\"" ${row}
+              
+              yq e --inplace ".spec.template.spec.containers[0].image = \"$value\"" ${row}
           done
           
           git config user.name 'flame-choon'
