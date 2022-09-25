@@ -139,7 +139,7 @@ jobs:
               yq e --inplace ".metadata.annotations.\"rest.app/short-id\" = \"${{ needs.project-build.outputs.short-sha }}\"" ${row}
               yq e --inplace ".metadata.annotations.\"rest.app/create-datetime\" = \"$current_datetime\"" ${row}
               yq e --inplace ".spec.template.metadata.annotations.\"rest.app/environment\" = \"${{ inputs.stage }}\"" ${row}
-              yq e --inplace ".spec.template.metadata.annotations.\"rest.app/short-id\" = \"${{ needs.platform-build-publish.outputs.short-sha }}\"" ${row}
+              yq e --inplace ".spec.template.metadata.annotations.\"rest.app/short-id\" = \"${{ needs.project-build.outputs.short-sha }}\"" ${row}
               yq e --inplace ".spec.template.metadata.annotations.\"rest.app/create-datetime\" = \"$current_datetime\"" ${row}
           done
           
