@@ -122,8 +122,8 @@ jobs:
         shell: bash
         run: |
           deployments='${{ steps.preprocess.outputs.deploymentjson }}'
-          registry="${{ needs.platform-build-publish.outputs.ECR_REGISTRY }}"
-          tag="${{ needs.platform-build-publish.outputs.TAG }}"
+          registry="${{ needs.project-build.outputs.ECR_REGISTRY }}"
+          tag="${{ needs.project-build.outputs.TAG }}"
 
           current_datetime=$(date '+%Y%m%d%H%M%S')
 
