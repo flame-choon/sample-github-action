@@ -79,7 +79,7 @@ jobs:
         shell: bash
         run: |
           cat build.gradle
-          VERSION=$(grep -w version build.gradle | cut -d"=" -f2)
+          VERSION=$(grep -w version .env | cut -d"=" -f2)
           echo ::set-output name=VERSION::${VERSION}    
 
       - name: Set Image Tag 
