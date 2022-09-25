@@ -78,7 +78,6 @@ jobs:
         id: get_version
         shell: bash
         run: |
-          cat build.gradle
           VERSION=$(grep -w version .env | cut -d"=" -f2)
           echo ::set-output name=VERSION::${VERSION}    
 
