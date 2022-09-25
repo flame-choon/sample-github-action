@@ -78,7 +78,7 @@ jobs:
         id: get_version
         shell: bash
         run: |
-          VERSION=$(grep -w version .env | cut -d"=" -f2)
+          VERSION=$(grep -w VERSION .env | cut -d"=" -f2)
           echo ::set-output name=VERSION::${VERSION}    
 
       - name: Set Image Tag 
