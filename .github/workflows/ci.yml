@@ -30,7 +30,7 @@ jobs:
     name: "Project build"
     runs-on: ubuntu-latest
     outputs:
-       : ${{ steps.access-ecr.outputs.registry }}
+      ECR_REGISTRY : ${{ steps.access-ecr.outputs.registry }}
       short-sha: ${{ steps.short-sha.outputs.sha }}
       TAG: ${{ steps.condval.outputs.value }}
     steps:
